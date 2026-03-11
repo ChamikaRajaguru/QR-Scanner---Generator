@@ -47,13 +47,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          _pages[index].icon,
-                          size: 150,
-                          color: Theme.of(context).colorScheme.primary,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.asset(
+                            'assets/app_icon.png',
+                            width: 150,
+                            height: 150,
+                          ),
                         ),
                         const SizedBox(height: 48),
                         Text(
+
                           _pages[index].title,
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
@@ -81,19 +85,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Row(
                     children: List.generate(
                       _pages.length,
-                      (index) => Container(
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
                         margin: const EdgeInsets.only(right: 8),
                         height: 8,
                         width: _currentPage == index ? 24 : 8,
                         decoration: BoxDecoration(
                           color: _currentPage == index
                               ? Theme.of(context).colorScheme.primary
-                              : Colors.grey.withOpacity(0.3),
+                              : Theme.of(context).colorScheme.primary.withAlpha(50),
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
                     ),
                   ),
+
                   _currentPage == _pages.length - 1
                       ? ElevatedButton(
                           onPressed: () {

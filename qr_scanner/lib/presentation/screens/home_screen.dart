@@ -59,7 +59,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(child: _tabs[_selectedIndex]),
+            Expanded(
+              child: IndexedStack(
+                index: _selectedIndex,
+                children: _tabs,
+              ),
+            ),
             if (_bannerAd != null)
               SizedBox(
                 width: _bannerAd!.size.width.toDouble(),
@@ -69,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) {

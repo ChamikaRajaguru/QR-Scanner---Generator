@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
-
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
@@ -19,15 +18,14 @@ class AppTheme {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
+        side: BorderSide(color: Colors.grey.withAlpha(26)), // ~0.1 opacity
       ),
     ),
-
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    navigationBarTheme: NavigationBarThemeData(
       elevation: 0,
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: AppColors.primary,
-      unselectedItemColor: Colors.grey,
+      backgroundColor: Colors.transparent,
+      indicatorColor: AppColors.primary.withAlpha(30),
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
     ),
   );
 
@@ -40,14 +38,22 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
     ),
     cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.white.withOpacity(0.1)),
+        side: BorderSide(color: Colors.white.withAlpha(26)), // ~0.1 opacity
       ),
     ),
-
+    navigationBarTheme: NavigationBarThemeData(
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      indicatorColor: AppColors.primary.withAlpha(50),
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+    ),
   );
 }
+

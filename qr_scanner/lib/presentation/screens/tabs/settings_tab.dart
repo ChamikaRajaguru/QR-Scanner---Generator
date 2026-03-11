@@ -16,48 +16,63 @@ class SettingsTab extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildSectionHeader('Appearance'),
-          BlocBuilder<ThemeBloc, ThemeState>(
-            builder: (context, state) {
-              return ListTile(
-                leading: const Icon(Icons.dark_mode_outlined),
-                title: const Text('Dark Mode'),
-                trailing: Switch(
-                  value: state.isDarkMode,
-                  onChanged: (value) {
-                    context.read<ThemeBloc>().add(ToggleTheme());
-                  },
-                ),
-              );
-            },
+          _buildSection(
+            context,
+            'Appearance',
+            [
+              BlocBuilder<ThemeBloc, ThemeState>(
+                builder: (context, state) {
+                  return ListTile(
+                    leading: const Icon(Icons.dark_mode_outlined),
+                    title: const Text('Dark Mode'),
+                    trailing: Switch(
+                      value: state.isDarkMode,
+                      onChanged: (value) {
+                        context.read<ThemeBloc>().add(ToggleTheme());
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          const Divider(),
-          _buildSectionHeader('Data Management'),
-          ListTile(
-            leading: const Icon(Icons.delete_sweep_outlined),
-            title: const Text('Clear Scan History'),
-            onTap: () => _showClearConfirm(context),
+          const SizedBox(height: 16),
+          _buildSection(
+            context,
+            'Data Management',
+            [
+              ListTile(
+                leading: const Icon(Icons.delete_sweep_outlined),
+                title: const Text('Clear Scan History'),
+                onTap: () => _showClearConfirm(context),
+              ),
+            ],
           ),
-          const Divider(),
-          _buildSectionHeader('About'),
-          ListTile(
-            leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text('Privacy Policy'),
-            onTap: () => _launchURL('https://example.com/privacy'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.star_outline_rounded),
-            title: const Text('Rate App'),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Thank you for rating us!')),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.info_outline_rounded),
-            title: const Text('App Version'),
-            trailing: const Text('1.0.0'),
+          const SizedBox(height: 16),
+          _buildSection(
+            context,
+            'About',
+            [
+              ListTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: const Text('Privacy Policy'),
+                onTap: () => _launchURL('https://example.com/privacy'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.star_outline_rounded),
+                title: const Text('Rate App'),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Thank you for rating us!')),
+                  );
+                },
+              ),
+              const ListTile(
+                leading: Icon(Icons.info_outline_rounded),
+                title: Text('App Version'),
+                trailing: Text('1.0.0'),
+              ),
+            ],
           ),
           const SizedBox(height: 32),
           Center(
@@ -71,16 +86,25 @@ class SettingsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
+  Widget _buildSection(BuildContext context, String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 8),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
         ),
-      ),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Column(children: children),
+        ),
+      ],
     );
   }
 
@@ -100,6 +124,10 @@ class SettingsTab extends StatelessWidget {
               context.read<QRBloc>().add(ClearHistory());
               Navigator.pop(context);
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
+              foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+            ),
             child: const Text('Clear All'),
           ),
         ],
@@ -114,3 +142,4 @@ class SettingsTab extends StatelessWidget {
     }
   }
 }
+

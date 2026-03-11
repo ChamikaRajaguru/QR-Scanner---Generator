@@ -40,10 +40,13 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Icon(
-                Icons.qr_code_scanner_rounded,
-                size: 80,
-                color: Theme.of(context).colorScheme.primary,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  'assets/app_icon.png',
+                  width: 100,
+                  height: 100,
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -57,10 +60,15 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 8),
             const Text('Fast. Simple. Secure.'),
             const SizedBox(height: 48),
-            const CircularProgressIndicator(),
+            const SizedBox(
+              width: 32,
+              height: 32,
+              child: CircularProgressIndicator(strokeWidth: 2.5),
+            ),
           ],
         ),
       ),
     );
   }
 }
+

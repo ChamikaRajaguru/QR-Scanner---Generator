@@ -17,6 +17,7 @@ class HistoryTab extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_sweep_rounded),
+            tooltip: 'Clear History',
             onPressed: () => _showClearConfirm(context),
           ),
         ],
@@ -29,64 +30,113 @@ class HistoryTab extends StatelessWidget {
           if (state is QRHistoryLoaded) {
             final history = state.history;
             if (history.isEmpty) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.history_rounded, size: 64, color: Colors.grey),
-                    SizedBox(height: 16),
-                    Text('No history found', style: TextStyle(color: Colors.grey)),
-                  ],
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.history_rounded,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.outlineVariant,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No history found',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Scanned and generated QRs will appear here.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }
-            return ListView.builder(
+            return ListView.separated(
+              padding: const EdgeInsets.all(16),
               itemCount: history.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 final qr = history[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: qr.isGenerated
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.primaryContainer,
-                    child: Icon(
-                      qr.isGenerated ? Icons.qr_code_rounded : Icons.qr_code_scanner_rounded,
-                      size: 20,
-                      color: qr.isGenerated
-                          ? Theme.of(context).colorScheme.secondary
-                          : Theme.of(context).colorScheme.primary,
+                return Card(
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    leading: CircleAvatar(
+                      backgroundColor: qr.isGenerated
+                          ? Theme.of(context).colorScheme.secondaryContainer
+                          : Theme.of(context).colorScheme.primaryContainer,
+                      child: Icon(
+                        qr.isGenerated ? Icons.qr_code_rounded : Icons.qr_code_scanner_rounded,
+                        size: 20,
+                        color: qr.isGenerated
+                            ? Theme.of(context).colorScheme.secondary
+                            : Theme.of(context).colorScheme.primary,
+                      ),
                     ),
-                  ),
-                  title: Text(
-                    qr.content,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    '${qr.type.name} • ${DateFormat('MMM dd, HH:mm').format(qr.createdAt)}',
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded),
-                    onPressed: () {
-                      context.read<QRBloc>().add(DeleteQR(qr.id));
+                    title: Text(
+                      qr.content,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        '${qr.type.name.toUpperCase()} • ${DateFormat('MMM dd, HH:mm').format(qr.createdAt)}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => qr.isGenerated
+                              ? QRViewScreen(qr: qr)
+                              : ScanResultScreen(qr: qr),
+                        ),
+                      );
+                    },
+                    onLongPress: () {
+                      // Optional: show quick delete or share
+                      _showItemActions(context, qr);
                     },
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => qr.isGenerated
-                            ? QRViewScreen(qr: qr)
-                            : ScanResultScreen(qr: qr),
-                      ),
-                    );
-                  },
                 );
               },
             );
           }
           return const Center(child: Text('Something went wrong'));
         },
+      ),
+    );
+  }
+
+  void _showItemActions(BuildContext context, dynamic qr) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.delete_outline_rounded, color: Colors.red),
+              title: const Text('Delete this item'),
+              onTap: () {
+                context.read<QRBloc>().add(DeleteQR(qr.id));
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -118,3 +168,4 @@ class HistoryTab extends StatelessWidget {
     );
   }
 }
+
