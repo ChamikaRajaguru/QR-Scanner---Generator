@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/action_card.dart';
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+  final Function(int) onTabSwitch;
+
+  const HomeTab({super.key, required this.onTabSwitch});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class HomeTab extends StatelessWidget {
             subtitle: 'Point and scan instantly',
             icon: Icons.qr_code_scanner_rounded,
             color: Theme.of(context).colorScheme.primaryContainer,
-            onTap: () {},
+            onTap: () => onTabSwitch(1),
           ),
           const SizedBox(height: 16),
           ActionCard(
@@ -33,7 +35,7 @@ class HomeTab extends StatelessWidget {
             subtitle: 'Generate for URL, WiFi, etc.',
             icon: Icons.add_circle_outline_rounded,
             color: Theme.of(context).colorScheme.secondaryContainer,
-            onTap: () {},
+            onTap: () => onTabSwitch(2),
           ),
           const SizedBox(height: 32),
           Text(

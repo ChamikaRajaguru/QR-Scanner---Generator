@@ -17,13 +17,19 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   BannerAd? _bannerAd;
 
-  final List<Widget> _tabs = [
-    const HomeTab(),
+  late final List<Widget> _tabs = [
+    HomeTab(onTabSwitch: _onDestinationSelected),
     const ScanTab(),
     const CreateTab(),
     const HistoryTab(),
     const SettingsTab(),
   ];
+
+  void _onDestinationSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   void initState() {
@@ -77,11 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),

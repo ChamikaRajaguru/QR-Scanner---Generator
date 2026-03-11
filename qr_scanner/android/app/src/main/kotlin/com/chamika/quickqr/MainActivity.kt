@@ -1,4 +1,4 @@
-package com.example.qr_scanner
+package com.chamika.quickqr
 
 import io.flutter.embedding.android.FlutterActivity
 
