@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/qr_bloc.dart';
 import '../../screens/scan_result_screen.dart';
 import '../../../data/models/qr_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class ScanTab extends StatefulWidget {
@@ -42,7 +43,20 @@ class _ScanTabState extends State<ScanTab> {
             },
           ),
           _buildOverlay(context),
-
+          Positioned(
+            bottom: 40,
+            right: 40,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black45,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.photo_library, color: Colors.white, size: 28),
+                onPressed: _scanFromGallery,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -65,6 +79,28 @@ class _ScanTabState extends State<ScanTab> {
         builder: (context) => ScanResultScreen(qr: qr),
       ),
     ).then((_) => _isScanned = false);
+  }
+
+  Future<void> _scanFromGallery() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    
+    if (image != null) {
+      final BarcodeCapture? barcodeCapture = await controller.analyzeImage(image.path);
+      
+      if (barcodeCapture != null && barcodeCapture.barcodes.isNotEmpty) {
+        final String? code = barcodeCapture.barcodes.first.rawValue;
+        if (code != null) {
+          _onDetect(code);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No QR code found in the image.')),
+          );
+        }
+      }
+    }
   }
 
   QRType _parseType(String code) {
