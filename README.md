@@ -24,9 +24,6 @@ A simple and efficient QR Code Scanner and Generator mobile application built us
 ---
 
 ## 📱 Screenshots
-
-<!-- Add your app screenshots here -->
-<!-- Example:
 ![image alt](https://github.com/ChamikaRajaguru/QR-Scanner---Generator/blob/f06cfae88ba16e7c44fe3bf47bcda41b7f05dc1e/1.jpg)
 ![image alt](https://github.com/ChamikaRajaguru/QR-Scanner---Generator/blob/1a5f0b0f3d4cd6c5586b0b4d7aca9111346202f4/2.jpg)
 -->
